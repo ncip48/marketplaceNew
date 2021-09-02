@@ -1,0 +1,43 @@
+{/* <Tab
+        style={{backgroundColor: colors.white}}
+        value={index}
+        indicatorStyle={{backgroundColor: colors.red}}
+        disableIndicator
+        onChange={setIndex}>
+        <ScrollView
+          style={{padding: sizes.five, backgroundColor: colors.white}}
+          horizontal
+          showsHorizontalScrollIndicator={false}>
+          {tabs.map(({title, component, status}, idx) => {
+            return (
+              <Tab.Item
+                titleStyle={{
+                  color: colors.white,
+                  fontFamily: font.Regular,
+                  fontSize: sizes.font10,
+                  marginVertical: -sizes.ten,
+                  marginTop: -8,
+                }}
+                containerStyle={{
+                  backgroundColor: colors.black,
+                  margin: sizes.five,
+                  borderRadius: 99,
+                  // padding: -10,
+                }}
+                title={title}
+                onPress={() => setIndex(idx)}
+              />
+            );
+          })}
+        </ScrollView>
+      </Tab> */}
+
+      {/* <TabView value={index} onChange={setIndex}>
+        {tabs.map(({title, component, status}, idx) => {
+          return (
+            <TabView.Item style={{backgroundColor: colors.bg, width: '100%'}}>
+              <PesananSayaItems navigation={navigation} orders={orders} />
+            </TabView.Item>
+          );
+        })}
+      </TabView> */}

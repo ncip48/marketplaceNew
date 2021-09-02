@@ -1,0 +1,201 @@
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  Image,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
+import {useSelector, useDispatch} from 'react-redux';
+import {HomeServices} from '../../services';
+import {currencyFormat} from '../../helpers';
+import {_fetch} from '../../redux/actions/global';
+import {Text} from '../../components';
+
+const Category = () => {
+  const isLoading = useSelector((state) => state.global.fullscreenLoading);
+  const dispatch = useDispatch();
+  const [category, setCategoy] = useState([]);
+
+  useEffect(() => {
+    dispatch(_fetch(HomeServices.getHome())).then(
+      (res) => res && setCategoy(res.data),
+    );
+  }, []);
+  return (
+    <View>
+      {isLoading ? (
+        <Text>Loadinggg</Text>
+      ) : (
+        category.map((data) => (
+          <View>
+            <View style={{flexDirection: 'row'}}>
+              <Text style={styles.Deskripsi}>{data.name} </Text>
+              <Text
+                style={styles.SeeKategori}
+                onPress={() =>
+                  this.props.navigation.navigate('Kategori Produk', {
+                    item: data,
+                  })
+                }>
+                lihat semua
+              </Text>
+            </View>
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+              data={data.products}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  onPress={() =>
+                    this.props.navigation.navigate('Produk Detail', {
+                      item: item,
+                    })
+                  }
+                  style={styles.Pembungkus}
+                  activeOpacity={1}>
+                  <Image
+                    style={styles.ImageComponentStyle}
+                    source={{
+                      uri: item.imagePhoto,
+                    }}
+                    onPress={() =>
+                      this.props.navigation.navigate('Produk Detail', {
+                        item: item,
+                      })
+                    }
+                  />
+                  <Text
+                    style={styles.Judul}
+                    onPress={() =>
+                      this.props.navigation.navigate('Produk Detail', {
+                        item: item,
+                      })
+                    }>
+                    {item.nameProduct.length > 15
+                      ? item.nameProduct.substring(0, 15) + '...'
+                      : item.nameProduct}
+                  </Text>
+                  <Text style={styles.Harga}>
+                    {currencyFormat(parseInt(item.price))}
+                  </Text>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item, index) => index}
+              contentContainerStyle={{margin: 5, marginTop: 0}}
+            />
+            <View
+              style={{
+                borderBottomColor: '#e5e5e5',
+                borderBottomWidth: 15,
+                marginTop: 10,
+              }}
+            />
+          </View>
+        ))
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  MainContainer: {
+    //justifyContent: 'center',
+    flex: 1,
+    backgroundColor: '#e5e5e5',
+  },
+  Card: {
+    backgroundColor: 'white',
+    marginBottom: 10,
+  },
+  Deskripsi: {
+    margin: 15,
+    marginBottom: 15,
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  SeeKategori: {
+    margin: 15,
+    marginLeft: 'auto',
+    marginBottom: 15,
+    fontSize: 13,
+    color: 'green',
+    textDecorationLine: 'underline',
+  },
+  Pembungkus: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#e5e5e5',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
+    margin: 5,
+    height: 200,
+    width: 150,
+  },
+  FlatListItemStyle: {
+    margin: 10,
+    padding: 10,
+    fontSize: 18,
+    height: 500,
+  },
+  ImageComponentStyle: {
+    justifyContent: 'center',
+    flex: 1,
+    alignItems: 'center',
+    height: 100,
+    borderRadius: 0,
+    borderWidth: 1,
+  },
+  ImageSkeleton: {
+    justifyContent: 'center',
+    flex: 1,
+    alignItems: 'center',
+    height: 100,
+    width: '100%',
+    borderRadius: 0,
+  },
+  Judul: {
+    color: '#000',
+    padding: 2,
+    fontSize: 14,
+    marginTop: 3,
+    textAlign: 'left',
+    marginBottom: 5,
+    marginLeft: 10,
+    marginRight: 10,
+    justifyContent: 'center',
+  },
+  JudulSkeleton: {
+    color: '#000',
+    padding: 2,
+    alignItems: 'center',
+    marginBottom: 5,
+    marginLeft: 10,
+    marginTop: 5,
+    marginRight: 10,
+    justifyContent: 'center',
+    width: 120,
+  },
+  Harga: {
+    color: '#cc0000',
+    padding: 2,
+    fontSize: 14,
+    textAlign: 'left',
+    marginBottom: 5,
+    marginLeft: 10,
+    marginRight: 10,
+    justifyContent: 'center',
+  },
+});
+
+export default Category;
