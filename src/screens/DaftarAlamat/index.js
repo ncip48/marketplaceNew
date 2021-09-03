@@ -2,7 +2,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import {StyleSheet, FlatList, RefreshControl} from 'react-native';
 import {View} from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import {Button, Header, Text, BottomSheet} from '../../components';
+import {Button, Header, Text, BottomSheet, Card} from '../../components';
 // import Animated from 'react-native-reanimated';
 import {useSelector, useDispatch} from 'react-redux';
 import {ProfileServices} from '../../services';
@@ -85,7 +85,7 @@ const DaftarAlamat = ({navigation}) => {
 
   const renderAddress = ({item}) => {
     return (
-      <View style={styles.wrapper}>
+      <Card style={{padding: sizes.fifTeen, margin: sizes.ten}}>
         <View style={styles.rowJustify}>
           {/* <View style={styles.row}>
             <Text size={sizes.ten} type="SemiBold">
@@ -178,7 +178,7 @@ const DaftarAlamat = ({navigation}) => {
           style={styles.buttonUbah}
           onPress={() => navigation.navigate('EditAlamat', {item})}
         /> */}
-      </View>
+      </Card>
     );
   };
 

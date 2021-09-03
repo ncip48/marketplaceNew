@@ -11,7 +11,7 @@ import {Divider} from 'react-native-elements';
 import {TouchableOpacity} from 'react-native';
 
 const PilihProvinsi = ({navigation, route}) => {
-  const {province} = useSelector((state) => state.region);
+  const {province} = useSelector(state => state.region);
   const {params} = route;
   const dispatch = useDispatch();
   // const [province, setProvince] = useState([]);
@@ -30,6 +30,7 @@ const PilihProvinsi = ({navigation, route}) => {
         onPress={() =>
           navigation.navigate(params.source, {
             province: item.province_id + '#' + item.province,
+            item: params.source == 'EditAlamat' ? params.item : null,
           })
         }>
         <Text size={12} style={styles.text}>

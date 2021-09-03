@@ -20,6 +20,8 @@ const TambahAlamat = ({navigation, route}) => {
   const isLoading = useSelector(state => state.global.fullscreenLoading);
   const userInfo = useSelector(state => state.auth.userInfo);
 
+  // console.log(params);
+
   const addAddress = payload => {
     const province = params.province.split('#')[0];
     const provinceName = params.province.split('#')[1];
@@ -126,6 +128,7 @@ const TambahAlamat = ({navigation, route}) => {
                     navigation.navigate('PilihKota', {
                       province_id: params?.province.split('#')[0],
                       source: 'TambahAlamat',
+                      province: params?.province,
                     })
                   }>
                   <TextInput

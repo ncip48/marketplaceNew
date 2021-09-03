@@ -61,10 +61,12 @@ const Keranjang = () => {
     return 0;
   };
 
+  console.log(cart);
+
   const subtotalCount = () => {
     if (cart) {
       return cart.reduce(
-        (sum, item) => sum + (item.checked == 1 ? item.checked : 0),
+        (sum, item) => sum + (item.checked == 1 ? item.qty : 0),
         0,
       );
     }
@@ -210,7 +212,7 @@ const Keranjang = () => {
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
           onRefresh={() => onRefresh()}
-          refreshing={isLoading}
+          refreshing={false}
           style={{
             paddingVertical: sizes.five,
             paddingHorizontal: sizes.five,

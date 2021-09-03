@@ -12,7 +12,7 @@ import {TouchableOpacity} from 'react-native';
 
 const PilihKota = ({navigation, route}) => {
   const {params} = route;
-  const {city} = useSelector((state) => state.region);
+  const {city} = useSelector(state => state.region);
   const dispatch = useDispatch();
   // const [city, setCity] = useState([]);
   // const isLoading = useSelector((state) => state.global.fullscreenLoading);
@@ -29,7 +29,9 @@ const PilihKota = ({navigation, route}) => {
         activeOpacity={1}
         onPress={() =>
           navigation.navigate(params.source, {
+            province: params.province,
             city: item.city_id + '#' + item.type + ' ' + item.city_name,
+            item: params.source == 'EditAlamat' ? params.item : null,
           })
         }>
         <Text size={12} style={styles.text}>
@@ -68,7 +70,7 @@ const PilihKota = ({navigation, route}) => {
           />
         ) : ( */}
         <FlatList
-          data={city.filter((res) => res.province_id == params.province_id)}
+          data={city.filter(res => res.province_id == params.province_id)}
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item, index) => index.toString()}

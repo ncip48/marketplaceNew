@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {StatusBar} from 'react-native';
+import {LogBox, StatusBar} from 'react-native';
 import ResponsiveScreen from 'react-native-auto-responsive-screen';
 import {NavigationContainer, useFocusEffect} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -50,9 +50,15 @@ const Stack = createStackNavigator();
 
 function MainTabNavigator() {
   const {cart} = useSelector(state => state.profile);
-  const BadgedIcon = withBadge(cart.length > 9 ? '9+' : cart.length, {
+  const subtotalCount = () => {
+    if (cart) {
+      return cart.reduce((sum, item) => sum + item.qty, 0);
+    }
+    return 0;
+  };
+  const BadgedIcon = withBadge(subtotalCount() > 9 ? '9+' : subtotalCount(), {
     left: 5,
-    hidden: cart.length == 0 ? true : false,
+    hidden: subtotalCount() == 0 ? true : false,
     badgeStyle: {
       backgroundColor: colors.red,
     },
@@ -189,7 +195,8 @@ function AppNavigator() {
 
   messaging().subscribeToTopic('all');
 
-  console.disableYellowBox = true;
+  // console.disableYellowBox = true;
+  LogBox.ignoreAllLogs(true);
 
   React.useEffect(() => {
     let foregroundListener = messaging().onMessage(async remoteMessage => {

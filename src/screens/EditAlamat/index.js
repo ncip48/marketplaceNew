@@ -124,7 +124,10 @@ const EditAlamat = ({navigation, route}) => {
               <TouchableOpacity
                 activeOpacity={1}
                 onPress={() =>
-                  navigation.navigate('PilihProvinsi', {source: 'EditAlamat'})
+                  navigation.navigate('PilihProvinsi', {
+                    source: 'EditAlamat',
+                    item,
+                  })
                 }>
                 <TextInput
                   label="Pilih Provinsi"
@@ -152,6 +155,8 @@ const EditAlamat = ({navigation, route}) => {
                       ? params?.province.split('#')[0]
                       : values.province.split('#')[0],
                     source: 'EditAlamat',
+                    province: params?.province ?? values.province,
+                    item: item,
                   })
                 }>
                 <TextInput
