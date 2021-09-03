@@ -7,7 +7,7 @@ import {_fetch} from '../../redux/actions/global';
 import {Divider, Icon, CheckBox, Image} from 'react-native-elements';
 import {Button, Card, Header, Text} from '../../components';
 import colors from '../../utils/colors';
-import {currencyFormat, getPriceDiskon} from '../../helpers';
+import {currencyFormat} from '../../helpers';
 import {setProfileState} from '../../redux/actions/profile';
 import {useFocusEffect} from '@react-navigation/native';
 import {sizes} from '../../utils';
@@ -84,23 +84,15 @@ const Keranjang = () => {
   const renderItem = ({item, index}) => {
     return (
       <Card style={{margin: sizes.ten}}>
-        <View style={[styles.row]}>
+        <View style={[styles.rowUp]}>
           <View style={styles.row}>
             <CheckBox
               checked={item.checked == 1 ? true : false}
               value={item.checked == 1 ? true : false}
               onPress={() => selectHandler(index, item.checked)}
               onValueChange={() => selectHandler(index, item.checked)}
-              iconType="material-community"
-              checkedIcon="checkbox-marked"
-              uncheckedIcon="checkbox-blank-outline"
-              checkedColor="red"
               style={{padding: 0, margin: 0}}
-              containerStyle={{
-                padding: 0,
-                margin: 0,
-                paddingHorizontal: 0,
-              }}
+              containerStyle={{padding: 0, margin: 0}}
               wrapperStyle={{padding: 0, margin: 0}}
             />
             <Image
@@ -108,8 +100,8 @@ const Keranjang = () => {
               style={{
                 width: sizes.twentyFive * 3,
                 height: sizes.twentyFive * 3,
-                // borderRadius: 8,
-                // backgroundColor: 'red',
+                borderRadius: 8,
+                backgroundColor: colors.gray,
               }}
               placeholderStyle={{backgroundColor: colors.white}}
               PlaceholderContent={
@@ -118,77 +110,63 @@ const Keranjang = () => {
               resizeMode="stretch"
             />
           </View>
-          <View style={{padding: sizes.ten, flex: 1}}>
-            <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text size={sizes.font14} type="Regular" style={{flex: 1}}>
-                {item.product.nameProduct}
-              </Text>
-              <Icon
-                type="material-community"
-                name="close"
-                size={sizes.twenty}
-              />
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginTop: sizes.ten,
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                <Icon
-                  size={sizes.twenty}
-                  type="material-community"
-                  name="minus-circle-outline"
-                />
-                <Text size={sizes.font12} style={{marginHorizontal: 10}}>
-                  {item.qty}
-                </Text>
-                <Icon
-                  size={sizes.twenty}
-                  type="material-community"
-                  name="plus-circle-outline"
-                />
-              </View>
-              <View>
-                {item.product.discount > 0 && (
+          <View style={{marginLeft: 10}}>
+            <Text size={10}>{item.product.nameProduct}</Text>
+            <View style={styles.row}>
+              {item.product.discount > 0 && (
+                <>
                   <Text
-                    color={colors.black}
-                    type="Bold"
-                    align="right"
-                    size={sizes.font12}>
-                    {currencyFormat(
-                      getPriceDiskon(item.product.discount, item.product.price),
-                    )}
+                    size={10}
+                    style={styles.txtDiscount}
+                    color={colors.white}>
+                    {item.product.discount} %
                   </Text>
-                )}
-                <Text
-                  align="right"
-                  style={
-                    item.product.discount > 0
-                      ? {
-                          textDecorationLine: 'line-through',
-                          textDecorationStyle: 'solid',
-                          // marginBottom: sizes.five,
-                          // marginHorizontal: sizes.ten,
-                        }
-                      : {}
-                  }
-                  color={item.product.discount > 0 ? colors.gray : colors.black}
-                  size={item.product.discount > 0 ? sizes.font10 : sizes.font12}
-                  type={item.product.discount > 0 ? 'Regular' : 'Bold'}>
-                  {item.product.discount > 0
-                    ? currencyFormat(parseInt(item.product.price))
-                    : currencyFormat(parseInt(item.product.price))}
-                </Text>
-              </View>
+                  <Text size={10} style={styles.delText} color={colors.grey}>
+                    {currencyFormat(item.product.price)}
+                  </Text>
+                </>
+              )}
+              <Text size={10} type="SemiBold">
+                {item.product.discount > 0
+                  ? currencyFormat(
+                      item.product.price -
+                        (item.product.discount / 100) * item.product.price,
+                    )
+                  : currencyFormat(item.product.price)}
+              </Text>
             </View>
+          </View>
+        </View>
+        <View style={[styles.rowSpace, {margin: 10}]}>
+          <View style={styles.row}>
+            <Icon
+              type="feather"
+              name="trash-2"
+              size={15}
+              containerStyle={{marginRight: 10}}
+            />
+            <Text
+              size={11}
+              style={[
+                styles.qty,
+                {borderColor: item.qty > 1 ? colors.green : colors.softgrey},
+              ]}
+              align="center"
+              type="SemiBold"
+              color={item.qty > 1 ? colors.green : colors.softgrey}>
+              -
+            </Text>
+            <Text size={10} style={{marginHorizontal: 10}}>
+              {item.qty}
+            </Text>
+            <Text
+              size={11}
+              style={styles.qty}
+              align="center"
+              type="SemiBold"
+              color={colors.green}>
+              +
+            </Text>
           </View>
         </View>
       </Card>
@@ -216,39 +194,24 @@ const Keranjang = () => {
             paddingHorizontal: sizes.five,
             paddingTop: 0,
           }}
-          ListFooterComponent={
-            <View
-              style={{
-                paddingHorizontal: sizes.fifTeen,
-                paddingVertical: sizes.ten,
-                // backgroundColor: colors.white,
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginBottom: sizes.ten,
-                }}>
-                <Text size={sizes.font12} color={colors.gray}>
-                  Total Harga:{' '}
-                </Text>
-                <Text size={sizes.font12}>
-                  {currencyFormat(subtotalPrice())}
-                </Text>
-              </View>
-              <Button
-                borderbg
-                title={`Checkout (${subtotalCount()})`}
-                bg={colors.red}
-                color={colors.white}
-                onPress={() => addCart(result.product.id)}
-                // loading={loadingCart}
-                rounded
-              />
-            </View>
-          }
         />
+        <View style={styles.footer}>
+          <View style={{flex: 1}}>
+            <Text size={10}>Total Harga</Text>
+            <Text size={12} type="SemiBold">
+              {currencyFormat(subtotalPrice())}
+            </Text>
+          </View>
+          <Button
+            borderbg
+            title={`Beli (${subtotalCount()})`}
+            bg={colors.green}
+            color={colors.white}
+            style={{width: (33 / 100) * Dimensions.get('screen').width - 15}}
+            onPress={() => addCart(result.product.id)}
+            // loading={loadingCart}
+          />
+        </View>
       </View>
     </>
   );

@@ -10,6 +10,7 @@ import InputOutline from './InputOutline';
 // import Switch from './CustomSwitch';
 import BottomSheet from './BottomSheet';
 import ErrorSheet from './ErrorSheet';
+import Card from './Card';
 
 export {
   ListProduct,
@@ -22,4 +23,5 @@ export {
   ScaledImage,
   InputOutline,
   ErrorSheet,
+  Card,
 };

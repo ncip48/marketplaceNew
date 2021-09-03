@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, FlatList, Animated, TouchableOpacity} from 'react-native';
 import {View} from 'react-native';
-import {Button, Header, Text} from '../../components';
+import {Button, Card, Header, Text} from '../../components';
 import colors from '../../utils/colors';
 import {useSelector, useDispatch} from 'react-redux';
 import sizes from '../../utils/size';
@@ -115,7 +115,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
 const PesananSayaItems = ({navigation, orders}) => {
   const renderOrders = ({item}) => {
     return (
-      <View style={styles.wrapper}>
+      <Card style={{padding: sizes.fifTeen, margin: sizes.ten}}>
         <View style={styles.rowJustify}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text type="SemiBold" size={sizes.font14}>
@@ -179,7 +179,7 @@ const PesananSayaItems = ({navigation, orders}) => {
             {getStatusOrder(item.status)}
           </Text>
         </View>
-      </View>
+      </Card>
     );
   };
 

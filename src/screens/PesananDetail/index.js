@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {AppState, BackHandler, FlatList, ScrollView, View} from 'react-native';
-import {Button, Header, Text} from '../../components';
+import {Button, Card, Header, Text} from '../../components';
 import colors from '../../utils/colors';
 import {Socket} from 'socket.io-client';
 import {baseURL} from '../../config';
@@ -32,6 +32,7 @@ export class PesananDetail extends Component {
   socket = io(baseURL, {transports: ['websocket']});
 
   async getData() {
+    const {data} = this.state;
     const {_fetch, userInfo} = this.props;
     // console.log(userInfo);
     this.setState({isLoading: true});
@@ -40,7 +41,11 @@ export class PesananDetail extends Component {
       false,
     );
     if (res) {
-      this.setState({items: res.data.items, isLoading: false});
+      this.setState({
+        items: res.data.items,
+        isLoading: false,
+        data: {...data, status: res.data.status, waybill: res.data.waybill},
+      });
     }
     // console.log(res);
   }
@@ -171,30 +176,15 @@ export class PesananDetail extends Component {
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item, index}) => {
               return (
-                <View
-                  style={{
-                    flex: 1,
-                    backgroundColor: colors.white,
-                    borderRadius: 8,
-                    borderWidth: 1,
-                    borderColor: colors.white,
-                    shadowColor: colors.white,
-                    shadowOffset: {
-                      width: 0,
-                      height: 1,
-                    },
-                    shadowOpacity: 0.22,
-                    shadowRadius: 2.22,
-                    elevation: 2,
-                    marginVertical: 7.5,
-                  }}>
+                <Card>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Image
                       source={{uri: JSON.parse(item.product.images)[0]}}
                       style={{
                         width: sizes.twentyFive * 3,
                         height: sizes.twentyFive * 3,
-                        borderRadius: 8,
+                        borderTopLeftRadius: 8,
+                        borderBottomLeftRadius: 8,
                       }}
                       placeholderStyle={{backgroundColor: colors.white}}
                       PlaceholderContent={
@@ -267,7 +257,7 @@ export class PesananDetail extends Component {
                       </View>
                     </View>
                   </View>
-                </View>
+                </Card>
               );
             }}
           />
