@@ -295,19 +295,37 @@ const DaftarAlamat = ({navigation}) => {
             renderItem={renderAddress}
             keyExtractor={(item, index) => index.toString()}
             contentContainerStyle={{paddingBottom: sizes.fifTeen}}
-            refreshControl={
-              <RefreshControl
-                refreshing={isLoading}
-                onRefresh={() => makeRequest()}
-              />
+            onRefresh={() => makeRequest()}
+            refreshing={false}
+            contentContainerStyle={{flexGrow: 1}}
+            ListEmptyComponent={
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text align="center" size={sizes.font12}>
+                  Tidak ada alamat
+                </Text>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('TambahAlamat')}
+                  activeOpacity={1}>
+                  <Text size={sizes.font12} color={colors.red}>
+                    Tambah alamat
+                  </Text>
+                </TouchableOpacity>
+              </View>
             }
             ListFooterComponent={
-              <TouchableOpacity
-                activeOpacity={1}
-                style={styles.wrapper}
-                onPress={() => navigation.navigate('TambahAlamat')}>
-                <Text size={sizes.font12}>+ Tambah Alamat</Text>
-              </TouchableOpacity>
+              address.length != 0 && (
+                <TouchableOpacity
+                  activeOpacity={1}
+                  style={styles.wrapper}
+                  onPress={() => navigation.navigate('TambahAlamat')}>
+                  <Text size={sizes.font12}>+ Tambah Alamat</Text>
+                </TouchableOpacity>
+              )
             }
           />
         )}

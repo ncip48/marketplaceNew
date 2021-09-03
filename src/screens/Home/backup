@@ -8,19 +8,13 @@ import {
   Animated,
   Dimensions,
 } from 'react-native';
-import {Icon} from 'react-native-elements';
+import {Header, Icon} from 'react-native-elements';
 import {SliderBox} from 'react-native-image-slider-box';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {useSelector, useDispatch} from 'react-redux';
 import {HomeServices, ProductServices} from '../../services';
 import {_fetch} from '../../redux/actions/global';
-import {
-  Text,
-  ListProduct,
-  Masonry,
-  ScaledImage,
-  Header,
-} from '../../components';
+import {Text, ListProduct, Masonry, ScaledImage} from '../../components';
 import {ScrollView} from 'react-native';
 import {RectButton} from 'react-native-gesture-handler';
 import colors from '../../utils/colors';
@@ -359,20 +353,108 @@ const Home = ({navigation}) => {
           <>
             <View style={{position: 'absolute'}}>
               <View style={{zIndex: 1}}>
-                {/* <Header
+                <Header
                   statusBarProps={{
                     translucent: true,
                     backgroundColor: 'transparent',
+                    // barStyle: !dark ? 'dark-content' : 'light-content',
                   }}
                   placement="left"
-                  backgroundColor="transparent"
+                  // centerComponent={
+                  //   <TouchableOpacity
+                  //     onPress={() => navigation.navigate('CariProduk')}
+                  //     activeOpacity={1}
+                  //     style={[
+                  //       styles.searchbar,
+                  //       {
+                  //         backgroundColor: AnimatedHeaderValue.interpolate({
+                  //           inputRange: [
+                  //             0,
+                  //             Header_Maximum_Height - Header_Minimum_Height,
+                  //           ],
+                  //           outputRange: [colors.white, colors.softgrey],
+                  //           extrapolate: 'clamp',
+                  //         }),
+                  //       },
+                  //     ]}>
+                  //     <Icon
+                  //       type="material-community"
+                  //       name="magnify"
+                  //       color={colors.grey}
+                  //       size={15}
+                  //     />
+                  //     <Text size={10}>Cari produk disini...</Text>
+                  //   </TouchableOpacity>
+                  // }
+                  // rightComponent={
+                  //   <View
+                  //     style={{
+                  //       flexDirection: 'row',
+                  //       justifyContent: 'space-between',
+                  //     }}>
+                  //     <TouchableOpacity activeOpacity={1}>
+                  //       <AnimatedIcon
+                  //         name="heart"
+                  //         type="material-community"
+                  //         color={AnimatedHeaderValue.interpolate({
+                  //           inputRange: [
+                  //             0,
+                  //             Header_Maximum_Height - Header_Minimum_Height,
+                  //           ],
+                  //           outputRange: [colors.white, colors.grey],
+                  //           extrapolate: 'clamp',
+                  //         })}
+                  //         size={23}
+                  //       />
+                  //     </TouchableOpacity>
+                  //     <TouchableOpacity
+                  //       style={styles.bellIcon}
+                  //       activeOpacity={1}>
+                  //       <AnimatedIcon
+                  //         name="email"
+                  //         type="material-community"
+                  //         color={AnimatedHeaderValue.interpolate({
+                  //           inputRange: [
+                  //             0,
+                  //             Header_Maximum_Height - Header_Minimum_Height,
+                  //           ],
+                  //           outputRange: [colors.white, colors.grey],
+                  //           extrapolate: 'clamp',
+                  //         })}
+                  //         size={23}
+                  //       />
+                  //     </TouchableOpacity>
+                  //     <TouchableOpacity activeOpacity={1}>
+                  //       <AnimatedIcon
+                  //         name="bell"
+                  //         type="material-community"
+                  //         color={AnimatedHeaderValue.interpolate({
+                  //           inputRange: [
+                  //             0,
+                  //             Header_Maximum_Height - Header_Minimum_Height,
+                  //           ],
+                  //           outputRange: [colors.white, colors.grey],
+                  //           extrapolate: 'clamp',
+                  //         })}
+                  //         size={23}
+                  //       />
+                  //     </TouchableOpacity>
+                  //   </View>
+                  // }
+                  backgroundColor={AnimatedHeaderValue.interpolate({
+                    inputRange: [
+                      0,
+                      Header_Maximum_Height - Header_Minimum_Height,
+                    ],
+                    outputRange: ['transparent', 'white'],
+                    extrapolate: 'clamp',
+                  })}
                   containerStyle={{
                     padding: 0,
                     width: Dimensions.get('window').width,
                     borderBottomColor: 'transparent',
                   }}
-                /> */}
-                <Header bg="transparent" noBack />
+                />
               </View>
             </View>
             <ScrollView

@@ -3,6 +3,7 @@ const initialState = () => ({
   address: [],
   reviews: [],
   cart: [],
+  favorit: [],
 });
 
 const profile = (state = initialState(), action = {}) => {

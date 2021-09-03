@@ -25,6 +25,7 @@ import {
   Profile,
   Splash,
   TambahAlamat,
+  Favorit,
 } from '../screens/index';
 import colors from '../utils/colors';
 import sizes from '../utils/size';
@@ -167,7 +168,7 @@ function MainTabNavigator() {
       />
       <Tab.Screen
         name="Favorite"
-        component={Keranjang}
+        component={Favorit}
         // initialParams={{bgcolor: colors.green, bar: 'light-content'}}
       />
       <Tab.Screen

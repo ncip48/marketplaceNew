@@ -15,6 +15,7 @@ import PembayaranDetail from './PembayaranDetail';
 import Profile from './Profile';
 import PesananSaya from './PesananSaya';
 import PesananDetail from './PesananDetail';
+import Favorit from './Favorit';
 
 export {
   Home,
@@ -34,4 +35,5 @@ export {
   Profile,
   PesananSaya,
   PesananDetail,
+  Favorit,
 };

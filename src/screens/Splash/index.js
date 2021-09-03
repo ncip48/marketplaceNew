@@ -34,11 +34,12 @@ const Splash = ({navigation}) => {
     await getAddress();
     await getOrders();
     await getCart();
+    await getFavorit();
     await getRegion();
   };
 
   const getAddress = async () => {
-    await dispatch(_fetch(ProfileServices.getAddress(), false)).then((res) => {
+    await dispatch(_fetch(ProfileServices.getAddress(), false)).then(res => {
       if (res) {
         dispatch(setProfileState('address', res.data));
       }
@@ -46,15 +47,23 @@ const Splash = ({navigation}) => {
   };
 
   const getCart = async () => {
-    await dispatch(_fetch(ProfileServices.getCart(), false)).then((res) => {
+    await dispatch(_fetch(ProfileServices.getCart(), false)).then(res => {
       if (res) {
         dispatch(setProfileState('cart', res.data));
       }
     });
   };
 
+  const getFavorit = async () => {
+    await dispatch(_fetch(ProfileServices.getFavorit(), false)).then(res => {
+      if (res) {
+        dispatch(setProfileState('favorit', res.data));
+      }
+    });
+  };
+
   const getOrders = async () => {
-    await dispatch(_fetch(CheckoutServices.getMyOrder(), false)).then((res) => {
+    await dispatch(_fetch(CheckoutServices.getMyOrder(), false)).then(res => {
       if (res) {
         dispatch(setProfileState('orders', res.data));
       }
@@ -62,12 +71,12 @@ const Splash = ({navigation}) => {
   };
 
   const getRegion = async () => {
-    await dispatch(_fetch(GlobalServices.getProvince(), false)).then((res) => {
+    await dispatch(_fetch(GlobalServices.getProvince(), false)).then(res => {
       if (res) {
         dispatch(setRegionState('province', res.data));
       }
     });
-    await dispatch(_fetch(GlobalServices.getCities(), false)).then((res) => {
+    await dispatch(_fetch(GlobalServices.getCities(), false)).then(res => {
       if (res) {
         dispatch(setRegionState('city', res.data));
       }
@@ -76,7 +85,7 @@ const Splash = ({navigation}) => {
   };
 
   const getHome = async () => {
-    dispatch(_fetch(HomeServices.getHome(), false)).then((res) => {
+    dispatch(_fetch(HomeServices.getHome(), false)).then(res => {
       if (res) {
         // setCategoy(res.data.categories);
         // setBrands(res.data.brands.splice(1, res.data.brands.length));

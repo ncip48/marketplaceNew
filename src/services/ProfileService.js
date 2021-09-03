@@ -25,4 +25,8 @@ export default {
     const config = await generateHeaders(['content-json', 'authorization']);
     return baseRequest.get(`/api/v1/cart`, config);
   },
+  async getFavorit() {
+    const config = await generateHeaders(['content-json', 'authorization']);
+    return baseRequest.get(`/api/v1/favourite`, config);
+  },
 };

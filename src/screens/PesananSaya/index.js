@@ -112,7 +112,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
   );
 }
 
-const PesananSayaItems = ({navigation, orders}) => {
+const PesananSayaItems = ({navigation, orders, refresh}) => {
   const renderOrders = ({item}) => {
     return (
       <Card style={{padding: sizes.fifTeen, margin: sizes.ten}}>
@@ -192,9 +192,17 @@ const PesananSayaItems = ({navigation, orders}) => {
         style={{paddingVertical: sizes.five, paddingHorizontal: sizes.five}}
         renderItem={renderOrders}
         keyExtractor={(item, index) => index.toString()}
-        // refreshControl={
-        //   <RefreshControl refreshing={false} onRefresh={() => makeRequest()} />
-        // }
+        contentContainerStyle={{flexGrow: 1}}
+        ListEmptyComponent={
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Text align="center" size={sizes.font12}>
+              Tidak ada pesanan
+            </Text>
+          </View>
+        }
+        onRefresh={() => refresh()}
+        refreshing={false}
       />
     </View>
   );
@@ -267,6 +275,7 @@ const PesananSaya = ({navigation}) => {
                         res.status == 'settlement' ||
                         res.status == 'processing',
                   )}
+                  refresh={() => makeRequest()}
                 />
               )}
               // component={SettingsScreen}

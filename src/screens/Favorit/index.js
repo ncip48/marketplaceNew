@@ -13,74 +13,26 @@ import {useFocusEffect} from '@react-navigation/native';
 import {sizes} from '../../utils';
 import {ActivityIndicator} from 'react-native-paper';
 
-const Keranjang = () => {
+const Favorit = () => {
   const dispatch = useDispatch();
-  const isLoading = useSelector(state => state.global.fullscreenLoading);
-  const {cart} = useSelector(state => state.profile);
-  // const [cart, setCart] = useState([]);
-  const [selectAll, setSelectAll] = useState(false);
-
-  useEffect(() => {
-    // getCart();
-  }, []);
+  const {favorit} = useSelector(state => state.profile);
 
   useFocusEffect(
     React.useCallback(() => {
-      // makeRequest();
-      getCart();
+      getFavorit();
     }, []),
   );
 
-  const selectHandler = (index, value) => {
-    const newItems = [...cart]; // clone the array
-    newItems[index]['checked'] = value == 1 ? 0 : 1; // set the new value
-    // console.log(newItems);
-    // setCart(newItems);
-    dispatch(setProfileState('cart', newItems));
-  };
-
-  const getCart = () => {
-    dispatch(_fetch(ProfileServices.getCart(), false)).then(res => {
+  const getFavorit = () => {
+    dispatch(_fetch(ProfileServices.getFavorit(), false)).then(res => {
       if (res) {
-        dispatch(setProfileState('cart', res.data));
+        dispatch(setProfileState('favorite', res.data));
       }
     });
   };
 
   const onRefresh = () => {
-    getCart();
-  };
-
-  const subtotalPrice = () => {
-    if (cart) {
-      return cart.reduce(
-        (sum, item) => sum + (item.checked == 1 ? item.totalPrice : 0),
-        0,
-      );
-    }
-    return 0;
-  };
-
-  console.log(cart);
-
-  const subtotalCount = () => {
-    if (cart) {
-      return cart.reduce(
-        (sum, item) => sum + (item.checked == 1 ? item.qty : 0),
-        0,
-      );
-    }
-    return 0;
-  };
-
-  const selectHandlerAll = value => {
-    const newItems = [...cart]; // clone the array
-    newItems.map((item, index) => {
-      newItems[index]['checked'] = value == true ? 0 : 1; // set the new value
-    });
-    // this.setState({ cartItems: newItems, selectAll: (value == true ? false : true) }); // set new state
-    setCart(newItems);
-    setSelectAll(value == true ? false : true);
+    getFavorit();
   };
 
   const renderItem = ({item, index}) => {
@@ -88,30 +40,15 @@ const Keranjang = () => {
       <Card style={{margin: sizes.ten}}>
         <View style={[styles.row]}>
           <View style={styles.row}>
-            <CheckBox
-              checked={item.checked == 1 ? true : false}
-              value={item.checked == 1 ? true : false}
-              onPress={() => selectHandler(index, item.checked)}
-              onValueChange={() => selectHandler(index, item.checked)}
-              iconType="material-community"
-              checkedIcon="checkbox-marked"
-              uncheckedIcon="checkbox-blank-outline"
-              checkedColor="red"
-              style={{padding: 0, margin: 0}}
-              containerStyle={{
-                padding: 0,
-                margin: 0,
-                paddingHorizontal: 0,
-              }}
-              wrapperStyle={{padding: 0, margin: 0}}
-            />
             <Image
               source={{uri: JSON.parse(item.product.images)[0]}}
               style={{
-                width: sizes.twentyFive * 3,
-                height: sizes.twentyFive * 3,
+                width: sizes.twentyFive * 3.5,
+                height: sizes.twentyFive * 3.5,
                 // borderRadius: 8,
                 // backgroundColor: 'red',
+                borderTopLeftRadius: 8,
+                borderBottomLeftRadius: 8,
               }}
               placeholderStyle={{backgroundColor: colors.white}}
               PlaceholderContent={
@@ -127,7 +64,7 @@ const Keranjang = () => {
                 size={sizes.font14}
                 type="Regular"
                 style={{flex: 1}}
-                numberOfLines={1}>
+                numberOfLines={2}>
                 {item.product.nameProduct}
               </Text>
               <Icon
@@ -143,39 +80,15 @@ const Keranjang = () => {
                 alignItems: 'center',
                 marginTop: sizes.ten,
               }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                <Icon
-                  size={sizes.twenty}
-                  type="material-community"
-                  name="minus-circle-outline"
-                />
-                <Text size={sizes.font12} style={{marginHorizontal: 10}}>
-                  {item.qty}
-                </Text>
-                <Icon
-                  size={sizes.twenty}
-                  type="material-community"
-                  name="plus-circle-outline"
-                />
-              </View>
               <View>
                 {item.product.discount > 0 && (
-                  <Text
-                    color={colors.black}
-                    type="Bold"
-                    align="right"
-                    size={sizes.font12}>
+                  <Text color={colors.black} type="Bold" size={sizes.font12}>
                     {currencyFormat(
                       getPriceDiskon(item.product.discount, item.product.price),
                     )}
                   </Text>
                 )}
                 <Text
-                  align="right"
                   style={
                     item.product.discount > 0
                       ? {
@@ -207,11 +120,11 @@ const Keranjang = () => {
       <View style={styles.container}>
         <View style={{paddingHorizontal: sizes.fifTeen}}>
           <Text size={sizes.twentyFive} type="SemiBold">
-            Keranjang
+            Favorit
           </Text>
         </View>
         <FlatList
-          data={cart}
+          data={favorit}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
@@ -227,40 +140,8 @@ const Keranjang = () => {
             <View
               style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
               <Text align="center" size={sizes.font12}>
-                Tidak ada item di keranjang
+                Tidak ada favorit
               </Text>
-            </View>
-          }
-          ListFooterComponent={
-            <View
-              style={{
-                paddingHorizontal: sizes.fifTeen,
-                paddingVertical: sizes.ten,
-                // backgroundColor: colors.white,
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginBottom: sizes.ten,
-                }}>
-                <Text size={sizes.font12} color={colors.gray}>
-                  Total Harga:{' '}
-                </Text>
-                <Text size={sizes.font12}>
-                  {currencyFormat(subtotalPrice())}
-                </Text>
-              </View>
-              <Button
-                borderbg
-                title={`Checkout (${subtotalCount()})`}
-                bg={colors.red}
-                color={colors.white}
-                onPress={() => addCart(result.product.id)}
-                // loading={loadingCart}
-                rounded
-              />
             </View>
           }
         />
@@ -343,4 +224,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Keranjang;
+export default Favorit;
