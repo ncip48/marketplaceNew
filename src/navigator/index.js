@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {LogBox, StatusBar} from 'react-native';
-import ResponsiveScreen from 'react-native-auto-responsive-screen';
 import {NavigationContainer, useFocusEffect} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useSelector} from 'react-redux';
@@ -26,6 +25,7 @@ import {
   Splash,
   TambahAlamat,
   Favorit,
+  UbahProfile,
 } from '../screens/index';
 import colors from '../utils/colors';
 import sizes from '../utils/size';
@@ -329,6 +329,7 @@ function AppNavigator() {
             />
             <Stack.Screen name="PesananSaya" component={PesananSaya} />
             <Stack.Screen name="PesananDetail" component={PesananDetail} />
+            <Stack.Screen name="UbahProfile" component={UbahProfile} />
           </>
         ) : (
           <>
@@ -339,27 +340,6 @@ function AppNavigator() {
             />
           </>
         )}
-        {/* <Stack.Screen name="Home" component={MainTabNavigator} /> */}
-        {/* <Stack.Screen
-          name="Produk Detail"
-          component={ProdukDetail}
-          initialParams={{bgcolor: 'transparent', bar: 'light-content'}}
-        />
-        <Stack.Screen
-          name="Kategori Produk"
-          component={KategoriProduk}
-          initialParams={{bgcolor: 'white', bar: 'dark-content'}}
-        />
-        <Stack.Screen
-          name="Account Page"
-          component={Akun}
-          initialParams={{bgcolor: 'white', bar: 'dark-content'}}
-        />
-        <Stack.Screen
-          name="Cart Page"
-          component={Cart}
-          initialParams={{bgcolor: 'white', bar: 'dark-content'}}
-        /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

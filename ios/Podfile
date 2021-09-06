@@ -14,6 +14,8 @@ target 'PekanRaya' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'react-native-version-info', :path => '../node_modules/react-native-version-info'
+
   target 'PekanRayaTests' do
     inherit! :complete
     # Pods for testing

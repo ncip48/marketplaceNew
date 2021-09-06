@@ -1,17 +1,147 @@
-import React from 'react';
-import {StyleSheet, FlatList, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
+import {
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  ScrollView,
+  PermissionsAndroid,
+} from 'react-native';
 import {View} from 'react-native';
 import {Avatar, Divider, Icon} from 'react-native-elements';
 import {Header, Text} from '../../components';
 import colors from '../../utils/colors';
 import sizes from '../../utils/size';
-import {useSelector} from 'react-redux';
-import {ScrollView} from 'react-native';
+import {useSelector, useDispatch} from 'react-redux';
+import VersionInfo from 'react-native-version-info';
+import * as ImagePicker from 'react-native-image-picker';
+import {Toaster} from '../../helpers';
+import {GlobalServices, ProfileServices} from '../../services';
+import {_fetch} from '../../redux/actions/global';
+import {setUserInfo, updateUserInfo} from '../../redux/actions/auth';
 
 const Profile = ({navigation}) => {
-  const {userInfo} = useSelector((state) => state.auth);
-  const {address, orders} = useSelector((state) => state.profile);
+  const dispatch = useDispatch();
+  const {userInfo} = useSelector(state => state.auth);
+  const {address, orders, reviews} = useSelector(state => state.profile);
+  const [photo, setPhoto] = useState(userInfo.photoProfile);
   // console.log(userInfo);
+
+  const toogleBottom = () => {};
+
+  const chooseImage = () => {
+    // setShowPromptFoto(false);
+    let options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+      maxWidth: 800,
+      maxHeight: 800,
+      quality: 0.5,
+    };
+    ImagePicker.launchImageLibrary(options, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+        alert(response.customButton);
+      } else {
+        const source = {uri: response.uri};
+        console.log('response', JSON.stringify(response));
+        // pushTemp(response);
+        handleChangePP(response);
+      }
+    });
+  };
+
+  const requestCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'App need access camera',
+          message: 'App need access camera ' + 'so you can take some pictures.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can use the camera');
+      } else {
+        console.log('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  const chooseImageCamera = async () => {
+    // setShowPromptFoto(false);
+    let options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+      maxWidth: 800,
+      maxHeight: 800,
+      quality: 0.5,
+    };
+
+    await requestCameraPermission().then(() => {
+      ImagePicker.launchCamera(options, response => {
+        console.log('IMAGE', response);
+        if (response.didCancel) {
+          console.log('User cancelled image picker');
+        } else if (response.error) {
+          console.log('ImagePicker Error: ', response.error);
+        } else if (response.customButton) {
+          console.log('User tapped custom button: ', response.customButton);
+          alert('asdkasldlkasldasldjasdl');
+        } else {
+          const source = {uri: response.uri};
+          console.log('response', JSON.stringify(response));
+          // pushTemp(response);
+          handleChangePP(response);
+        }
+      });
+    });
+  };
+
+  const handleChangePP = req => {
+    let newReq = req.assets[0];
+    try {
+      dispatch(_fetch(GlobalServices.uploadPhoto(newReq))).then(res => {
+        if (res) {
+          if (res) {
+            handleChange(res.data.fullPath);
+          }
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleRemovePP = () => {
+    dispatch(setUserInfo('photoProfile', null));
+    handleChange(null);
+  };
+
+  const handleChange = req => {
+    dispatch(_fetch(ProfileServices.updateProfile({photoProfile: req}))).then(
+      res => {
+        if (res) {
+          if (res) {
+            // Toaster(res.message);
+            dispatch(updateUserInfo(res.data));
+          }
+        }
+      },
+    );
+  };
 
   const MenuItem = ({title, subTitle, to, end, icon}) => {
     return (
@@ -63,12 +193,33 @@ const Profile = ({navigation}) => {
               alignItems: 'center',
               marginVertical: sizes.twenty,
             }}>
-            <Avatar
-              size="medium"
-              rounded
-              title={userInfo.firstName[0]}
-              overlayContainerStyle={{backgroundColor: colors.red}}
-            />
+            {userInfo.photoProfile ? (
+              <Avatar
+                size="medium"
+                source={{uri: userInfo.photoProfile}}
+                rounded
+                overlayContainerStyle={{backgroundColor: colors.red}}>
+                <Avatar.Accessory
+                  type="material-community"
+                  name="pencil"
+                  size={sizes.fifTeen}
+                  onPress={() => toogleBottom()}
+                />
+              </Avatar>
+            ) : (
+              <Avatar
+                size="medium"
+                rounded
+                title={userInfo.firstName[0]}
+                overlayContainerStyle={{backgroundColor: colors.red}}>
+                <Avatar.Accessory
+                  type="material-community"
+                  name="pencil"
+                  size={sizes.fifTeen}
+                  onPress={() => toogleBottom()}
+                />
+              </Avatar>
+            )}
             <View style={{marginLeft: sizes.fifTeen}}>
               <Text size={sizes.font16} type="SemiBold">
                 {userInfo.firstName + ' ' + userInfo.lastName}
@@ -81,30 +232,43 @@ const Profile = ({navigation}) => {
         </View>
         <MenuItem
           title="Pesanan Saya"
-          subTitle={`Ada ${orders.length} pesanan`}
+          subTitle={
+            orders.length == 0
+              ? 'Belum ada pesanan'
+              : `Ada ${orders.length} pesanan`
+          }
           to="PesananSaya"
           icon="file-document-outline"
         />
         <MenuItem
           title="Alamat Saya"
-          subTitle={`Ada ${address.length} alamat`}
+          subTitle={
+            address.length == 0
+              ? 'Belum ada alamat disimpan'
+              : `Ada ${address.length} alamat`
+          }
           to="DaftarAlamat"
           icon="map-marker-outline"
         />
         <MenuItem
           title="Ulasan Saya"
-          subTitle="Ada 12 ulasan"
+          subTitle={
+            reviews.length == 0
+              ? 'Belum ada ulasan'
+              : `Ada ${reviews.length} ulasan`
+          }
           icon="star-outline"
         />
-        <MenuItem
+        {/* <MenuItem
           title="Rekening Saya"
           subTitle="Ada 12 rekening"
           icon="credit-card-outline"
-        />
+        /> */}
         <MenuItem
           title="Pengaturan Akun"
           subTitle="Nama, Password, Email"
           icon="account-cog-outline"
+          to="UbahProfile"
           // icon="account-settings-outline"
         />
         <MenuItem
@@ -113,6 +277,13 @@ const Profile = ({navigation}) => {
           icon="cog-outline"
           end
         />
+        <Text
+          size={sizes.font12}
+          color={colors.grey}
+          style={{marginTop: sizes.twenty}}
+          align="center">
+          versi {VersionInfo.appVersion}
+        </Text>
       </ScrollView>
     </>
   );

@@ -17,6 +17,8 @@ import {
 import {setHomeState} from '../../redux/actions/home';
 import {setRegionState} from '../../redux/actions/region';
 import {setProfileState} from '../../redux/actions/profile';
+import {updateUserInfo} from '../../redux/actions/auth';
+import VersionInfo from 'react-native-version-info';
 
 const Splash = ({navigation}) => {
   const dispatch = useDispatch();
@@ -29,6 +31,7 @@ const Splash = ({navigation}) => {
   }, []);
 
   const callAllApi = async () => {
+    await getProfile();
     await updateToken();
     await getHome();
     await getAddress();
@@ -36,6 +39,14 @@ const Splash = ({navigation}) => {
     await getCart();
     await getFavorit();
     await getRegion();
+  };
+
+  const getProfile = async () => {
+    await dispatch(_fetch(ProfileServices.getProfile(), false)).then(res => {
+      if (res) {
+        dispatch(updateUserInfo(res.data));
+      }
+    });
   };
 
   const getAddress = async () => {
@@ -106,6 +117,13 @@ const Splash = ({navigation}) => {
   const updateToken = async () => {
     const token_firebase = await getFirebaseToken();
     console.log(token_firebase);
+    await dispatch(
+      _fetch(ProfileServices.updateToken({token: token_firebase}), false),
+    ).then(res => {
+      if (res) {
+        // dispatch(setProfileState('address', res.data));
+      }
+    });
   };
 
   return (
@@ -118,9 +136,12 @@ const Splash = ({navigation}) => {
           alignItems: 'center',
           backgroundColor: colors.red,
         }}>
-        <ActivityIndicator size={sizes.font26} color={colors.white} />
-        <Text size={sizes.font22} color={colors.white}>
-          Loading
+        {/* <ActivityIndicator size={sizes.font26} color={colors.white} /> */}
+        <Text size={sizes.font26} color={colors.white} type="SemiBold">
+          PekanRaya
+        </Text>
+        <Text size={sizes.font12} color={colors.white} align="center">
+          versi {VersionInfo.appVersion}
         </Text>
       </View>
     </>

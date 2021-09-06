@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import {Formik} from 'formik';
 import {useSelector, useDispatch} from 'react-redux';
 import {AuthServices} from '../../services';
-import {_fetch} from '../../redux/actions/global';
+import {_fetch, _fetch_noerror} from '../../redux/actions/global';
 import {Divider, Icon} from 'react-native-elements';
 import {
   Button,
@@ -15,6 +15,10 @@ import {
   Text,
   TextInput,
 } from '../../components';
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 import colors from '../../utils/colors';
 import {login} from '../../redux/actions/auth';
 import sizes from '../../utils/size';
@@ -22,7 +26,7 @@ import {RFPercentage} from 'react-native-responsive-fontsize';
 
 const Masuk = ({navigation}) => {
   const dispatch = useDispatch();
-  const isLoading = useSelector((state) => state.global.fullscreenLoading);
+  const isLoading = useSelector(state => state.global.fullscreenLoading);
 
   const [hide, setHide] = useState(true);
   const [error, setError] = useState(null);
@@ -32,10 +36,10 @@ const Masuk = ({navigation}) => {
     setHide(!hide);
   };
 
-  const loginAction = async (payload) => {
+  const loginAction = async payload => {
     console.log(payload);
     const res = await dispatch(
-      _fetch(
+      _fetch_noerror(
         AuthServices.loginAction({
           ...payload,
         }),
@@ -50,6 +54,27 @@ const Masuk = ({navigation}) => {
   };
 
   // console.log(RFPercentage(4.6));
+  const loginGoogleAction = async () => {
+    //6A:44:A6:09:BC:79:B7:BA:41:EC:0D:35:1E:5C:33:38:D9:90:B7:36
+    console.log('waiting');
+    try {
+      await GoogleSignin.configure();
+      await GoogleSignin.hasPlayServices();
+      const userGoogle = await GoogleSignin.signIn();
+      console.log(userGoogle);
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // user cancelled the login flow
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation (e.g. sign in) is in progress already
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+      } else {
+        // some other error happened
+      }
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -147,6 +172,7 @@ const Masuk = ({navigation}) => {
           //         disabled={isLoading}
           style={styles.btn}
           rounded
+          onPress={() => loginGoogleAction()}
         />
         <Text
           color={colors.softgrey}

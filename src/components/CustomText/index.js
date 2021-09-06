@@ -1,5 +1,4 @@
 import React from 'react';
-import ResponsiveScreen from 'react-native-auto-responsive-screen';
 import {Text, View} from 'react-native';
 import {font} from '../../utils';
 import colors from '../../utils/colors';

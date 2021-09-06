@@ -21,6 +21,10 @@ export default {
     const config = await generateHeaders(['content-json', 'authorization']);
     return baseRequest.delete(`/api/v1/favourite/${id}`, config);
   },
+  async removeFavoriteByProduct(id) {
+    const config = await generateHeaders(['content-json', 'authorization']);
+    return baseRequest.delete(`/api/v1/favourite_product/${id}`, config);
+  },
   async addCart(payload, id) {
     const config = await generateHeaders(['content-json', 'authorization']);
     return baseRequest.post(`/api/v1/cart/${id}`, {...payload}, config);

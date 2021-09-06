@@ -6,7 +6,7 @@ import {baseURL} from '../config';
 export const baseRequest = axios.create({baseURL});
 
 // taruh header disini
-export const generateHeaders = async (types) => {
+export const generateHeaders = async types => {
   try {
     let headers = {};
 
@@ -19,9 +19,9 @@ export const generateHeaders = async (types) => {
     // if (types.includes('content-urlencoded')) {
     //   headers['Content-Type'] = 'application/x-www-form-urlencoded';
     // }
-    // if (types.includes('content-formdata')) {
-    //   headers['Content-Type'] = 'multipart/form-data';
-    // }
+    if (types.includes('content-formdata')) {
+      headers['Content-Type'] = 'multipart/form-data';
+    }
     if (types.includes('authorization')) {
       const persist = await AsyncStorage.getItem('user:root');
       const root = JSON.parse(persist);

@@ -4,6 +4,7 @@ import {Platform} from 'react-native';
 import {firebase} from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
 import colors from '../utils/colors';
+import {Snackbar} from 'react-native-paper';
 
 PushNotification.configure({
   // (required) Called when a remote or local notification is opened or received
@@ -35,6 +36,7 @@ export const formatNumber = num => {
 };
 
 export const Toaster = (msg, duration = ToastAndroid.LONG) => {
+  // let visible = true;
   if (Platform.OS === 'android') {
     ToastAndroid.show(msg, duration);
   } else {

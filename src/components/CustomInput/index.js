@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {KeyboardAvoidingView} from 'react-native';
-import ResponsiveScreen from 'react-native-auto-responsive-screen';
 import {Input} from 'react-native-elements';
 import {font} from '../../utils';
 import colors from '../../utils/colors';
@@ -10,11 +9,15 @@ import sizes from '../../utils/size';
 const CustomInput = ({style, hide, password, errorMessage, ...otherProps}) => {
   const [isFocus, setIsFocus] = useState(false);
 
-  const focusChange = (val) => (e) => setIsFocus(val);
+  const focusChange = val => e => setIsFocus(val);
 
   return (
     <KeyboardAvoidingView
-      style={[style, styles.container, {marginBottom: errorMessage ? 0 : 15}]}>
+      style={[
+        style,
+        styles.container,
+        {marginBottom: errorMessage ? 0 : -sizes.ten},
+      ]}>
       <Input
         secureTextEntry={password ? true : false}
         autoCapitalize={'none'}
@@ -26,7 +29,7 @@ const CustomInput = ({style, hide, password, errorMessage, ...otherProps}) => {
         inputContainerStyle={{
           borderColor: isFocus ? colors.red : colors.softgrey,
           paddingBottom: 0,
-          marginBottom: -sizes.twentyFive,
+          // marginBottom: -sizes.twentyFive,
         }}
         containerStyle={
           {
@@ -40,7 +43,7 @@ const CustomInput = ({style, hide, password, errorMessage, ...otherProps}) => {
           styles.label,
           {
             color: isFocus ? colors.red : colors.grey,
-            fontSize: ResponsiveScreen.fontSize(12),
+            fontSize: sizes.font12,
           },
         ]}
         errorStyle={styles.inputError}

@@ -59,7 +59,7 @@ const EditAlamat = ({navigation, route}) => {
         ),
       ),
     ).then(res => {
-      if (res.status == 200) {
+      if (res) {
         dispatch(updateAddress(res.data));
         navigation.goBack();
       }
@@ -69,7 +69,7 @@ const EditAlamat = ({navigation, route}) => {
   const handleRemove = () => {
     let id = item.id;
     dispatch(_fetch(ProfileServices.deleteAddress(id), false)).then(res => {
-      if (res.status == 200) {
+      if (res) {
         dispatch(deleteAddress(id));
         navigation.goBack();
       }

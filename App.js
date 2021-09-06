@@ -1,9 +1,8 @@
-import 'react-native-gesture-handler';
+//keytool -list -v -keystore c:/Project/Mobile/juber/android/app/debug.keystore -alias androiddebugkey -storepass android -keypass android
 import React, {Component} from 'react';
 import MainNavigation from './src/navigator/index';
 import messaging from '@react-native-firebase/messaging';
 import {Alert, LogBox} from 'react-native';
-// import {Provider as ProviderFW} from 'react-native-paper'
 import ResponsiveScreen from 'react-native-auto-responsive-screen';
 import {Provider} from 'react-redux';
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import {TouchableOpacity, Image, StyleSheet, View} from 'react-native';
-import ResponsiveScreen from 'react-native-auto-responsive-screen';
 import CustomText from './CustomText';
 import {useNavigation} from '@react-navigation/native';
 import {currencyFormat, formatNumber, getPriceDiskon} from '../helpers';
@@ -10,7 +9,7 @@ import colors from '../utils/colors';
 
 const ListProduct = ({data, terlaris}) => {
   const navigation = useNavigation();
-  const navigate = (to, payload) => (e) => navigation.navigate(to, payload);
+  const navigate = (to, payload) => e => navigation.navigate(to, payload);
   const {images, nameProduct, price, discount, countBuy, qtyBuy} = data;
   // const countBuy = 11000;
   return (

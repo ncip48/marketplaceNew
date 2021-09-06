@@ -7,8 +7,8 @@ import {_fetch} from '../../redux/actions/global';
 import {Divider, Icon, CheckBox, Image} from 'react-native-elements';
 import {Button, Card, Header, Text} from '../../components';
 import colors from '../../utils/colors';
-import {currencyFormat, getPriceDiskon} from '../../helpers';
-import {setProfileState} from '../../redux/actions/profile';
+import {currencyFormat, getPriceDiskon, Toaster} from '../../helpers';
+import {deleteFavorit, setProfileState} from '../../redux/actions/profile';
 import {useFocusEffect} from '@react-navigation/native';
 import {sizes} from '../../utils';
 import {ActivityIndicator} from 'react-native-paper';
@@ -26,13 +26,22 @@ const Favorit = () => {
   const getFavorit = () => {
     dispatch(_fetch(ProfileServices.getFavorit(), false)).then(res => {
       if (res) {
-        dispatch(setProfileState('favorite', res.data));
+        dispatch(setProfileState('favorit', res.data));
       }
     });
   };
 
   const onRefresh = () => {
     getFavorit();
+  };
+
+  const deleteFavorite = id => {
+    dispatch(deleteFavorit(id));
+    dispatch(_fetch(ProfileServices.deleteFavorit(id), false)).then(res => {
+      if (res) {
+        Toaster(res?.message);
+      }
+    });
   };
 
   const renderItem = ({item, index}) => {
@@ -71,6 +80,7 @@ const Favorit = () => {
                 type="material-community"
                 name="close"
                 size={sizes.twenty}
+                onPress={() => deleteFavorite(item.id)}
               />
             </View>
             <View
@@ -135,7 +145,7 @@ const Favorit = () => {
             paddingHorizontal: sizes.five,
             paddingTop: 0,
           }}
-          contentContainerStyle={{flexGrow: 1}}
+          contentContainerStyle={{flexGrow: 1, paddingBottom: sizes.five}}
           ListEmptyComponent={
             <View
               style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>

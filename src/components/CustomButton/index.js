@@ -1,7 +1,6 @@
 import {size} from 'lodash';
 import React from 'react';
 import {TouchableOpacity} from 'react-native';
-import ResponsiveScreen from 'react-native-auto-responsive-screen';
 import {View} from 'react-native';
 import Spinner from 'react-native-spinkit';
 import {Text} from '..';

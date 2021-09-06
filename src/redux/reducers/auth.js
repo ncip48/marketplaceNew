@@ -10,6 +10,18 @@ const auth = (state = initialState(), action = {}) => {
       const {token, ...userInfo} = action.payload;
       return {...state, userInfo, token, isLogin: true};
 
+    case 'UPDATE_USER_INFO':
+      return {...state, userInfo: action.payload};
+
+    case 'SET_USER_INFO':
+      const otherUserInfo = Object.keys(state.userInfo)
+        .filter(key => key !== action.name)
+        .reduce((obj, key) => ({...obj, [key]: state.userInfo[key]}), {});
+      return {
+        ...state,
+        userInfo: {...otherUserInfo, [action.name]: action.payload},
+      };
+
     case 'AUTH_RESET':
       const init = initialState();
       init.showOnboard = false;

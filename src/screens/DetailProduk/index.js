@@ -8,7 +8,7 @@ import colors from '../../utils/colors';
 import {ScrollView} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {HomeServices, ProductServices} from '../../services';
-import {_fetch} from '../../redux/actions/global';
+import {_fetch, _fetch_noerror} from '../../redux/actions/global';
 import {actualQty, currencyFormat, Toaster} from '../../helpers';
 import {baseRequest, generateHeaders} from '../../services/config';
 import {TouchableOpacity} from 'react-native';
@@ -35,7 +35,6 @@ const DetailProduk = ({route, navigation}) => {
   useEffect(() => {
     dispatch(_fetch(ProductServices.getDetailProduct(item.id))).then(res => {
       if (res) {
-        // console.log('is favorit', res.data);
         setIsFavorit(res.data.isFavourite);
         setResult(res.data);
       }
@@ -55,13 +54,14 @@ const DetailProduk = ({route, navigation}) => {
   // };
 
   const removeFavorite = id => {
-    dispatch(_fetch(ProductServices.removeFavorite(id), false)).then(res => {
-      if (res) {
-        setIsFavorit(false);
-        Toaster(res.message);
-        // getProduct();
-      }
-    });
+    dispatch(_fetch(ProductServices.removeFavoriteByProduct(id), false)).then(
+      res => {
+        if (res) {
+          setIsFavorit(false);
+          Toaster(res.message);
+        }
+      },
+    );
   };
 
   const addFavorite = id => {
@@ -70,7 +70,6 @@ const DetailProduk = ({route, navigation}) => {
         if (res) {
           setIsFavorit(true);
           Toaster(res.message);
-          // getProduct();
         }
       },
     );
@@ -78,13 +77,15 @@ const DetailProduk = ({route, navigation}) => {
 
   const addCart = id => {
     setLoadingCart(true);
-    dispatch(_fetch(ProductServices.addCart({qty: 1}, id), false)).then(res => {
-      setLoadingCart(false);
-      if (res.status != 200) {
-        return setIsError(true), setErrorMsg(res.error);
-      }
-      sheetCartRef.current.open();
-    });
+    dispatch(_fetch_noerror(ProductServices.addCart({qty: 1}, id), false)).then(
+      res => {
+        setLoadingCart(false);
+        if (res.status != 200) {
+          return setIsError(true), setErrorMsg(res.error);
+        }
+        sheetCartRef.current.open();
+      },
+    );
   };
 
   return (

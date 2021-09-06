@@ -386,7 +386,7 @@ const Home = ({navigation}) => {
               //   },
               // )}
               refreshControl={
-                <RefreshControl refreshing={isLoading} onRefresh={_onRefresh} />
+                <RefreshControl refreshing={false} onRefresh={_onRefresh} />
               }>
               <SliderBox
                 images={banners}

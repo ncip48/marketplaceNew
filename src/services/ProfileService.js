@@ -1,6 +1,18 @@
 import {generateHeaders, baseRequest} from './config';
 
 export default {
+  async getProfile() {
+    const config = await generateHeaders(['content-json', 'authorization']);
+    return baseRequest.get(`/api/v1/profiles`, config);
+  },
+  async updateToken(payload) {
+    const config = await generateHeaders(['content-json', 'authorization']);
+    return baseRequest.patch(`/api/v1/profile/token`, {...payload}, config);
+  },
+  async updateProfile(payload) {
+    const config = await generateHeaders(['content-json', 'authorization']);
+    return baseRequest.patch(`/api/v1/profile`, {...payload}, config);
+  },
   async getAddress() {
     const config = await generateHeaders(['content-json', 'authorization']);
     return baseRequest.get(`/api/v1/profile/address`, config);
@@ -25,8 +37,16 @@ export default {
     const config = await generateHeaders(['content-json', 'authorization']);
     return baseRequest.get(`/api/v1/cart`, config);
   },
+  async deleteCart(id) {
+    const config = await generateHeaders(['content-json', 'authorization']);
+    return baseRequest.delete(`/api/v1/cart/${id}`, config);
+  },
   async getFavorit() {
     const config = await generateHeaders(['content-json', 'authorization']);
     return baseRequest.get(`/api/v1/favourite`, config);
+  },
+  async deleteFavorit(id) {
+    const config = await generateHeaders(['content-json', 'authorization']);
+    return baseRequest.delete(`/api/v1/favourite/${id}`, config);
   },
 };

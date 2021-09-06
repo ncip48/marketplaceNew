@@ -7,11 +7,16 @@ import {_fetch} from '../../redux/actions/global';
 import {Divider, Icon, CheckBox, Image} from 'react-native-elements';
 import {Button, Card, Header, Text} from '../../components';
 import colors from '../../utils/colors';
-import {currencyFormat, getPriceDiskon} from '../../helpers';
-import {setProfileState} from '../../redux/actions/profile';
+import {currencyFormat, getPriceDiskon, Toaster} from '../../helpers';
+import {
+  deleteCart,
+  setProfileState,
+  updateCart,
+} from '../../redux/actions/profile';
 import {useFocusEffect} from '@react-navigation/native';
 import {sizes} from '../../utils';
 import {ActivityIndicator} from 'react-native-paper';
+import debounce from 'lodash/debounce';
 
 const Keranjang = () => {
   const dispatch = useDispatch();
@@ -45,6 +50,29 @@ const Keranjang = () => {
         dispatch(setProfileState('cart', res.data));
       }
     });
+  };
+
+  const removeCart = id => {
+    dispatch(deleteCart(id));
+    dispatch(_fetch(ProfileServices.deleteCart(id), false)).then(res => {
+      if (res) {
+        Toaster(res.message);
+      }
+    });
+  };
+
+  const quantityCart = (type, item, index) => {
+    const items = cart;
+    if (type == 'inc') {
+      item.qty += 1;
+    } else {
+      if (item.qty == 1) return;
+      item.qty -= 1;
+    }
+    items.splice(index, 1, item);
+    let newRes = items.filter(res => res.id == item.id);
+    dispatch(updateCart(newRes[0]));
+    // console.log(newRes[0].qty);
   };
 
   const onRefresh = () => {
@@ -134,6 +162,7 @@ const Keranjang = () => {
                 type="material-community"
                 name="close"
                 size={sizes.twenty}
+                onPress={() => removeCart(item.id)}
               />
             </View>
             <View
@@ -152,6 +181,7 @@ const Keranjang = () => {
                   size={sizes.twenty}
                   type="material-community"
                   name="minus-circle-outline"
+                  onPress={() => quantityCart('dec', item, index)}
                 />
                 <Text size={sizes.font12} style={{marginHorizontal: 10}}>
                   {item.qty}
@@ -160,6 +190,7 @@ const Keranjang = () => {
                   size={sizes.twenty}
                   type="material-community"
                   name="plus-circle-outline"
+                  onPress={() => quantityCart('inc', item, index)}
                 />
               </View>
               <View>
@@ -170,7 +201,10 @@ const Keranjang = () => {
                     align="right"
                     size={sizes.font12}>
                     {currencyFormat(
-                      getPriceDiskon(item.product.discount, item.product.price),
+                      getPriceDiskon(
+                        item.product.discount,
+                        item.product.price,
+                      ) * item.qty,
                     )}
                   </Text>
                 )}
@@ -190,8 +224,8 @@ const Keranjang = () => {
                   size={item.product.discount > 0 ? sizes.font10 : sizes.font12}
                   type={item.product.discount > 0 ? 'Regular' : 'Bold'}>
                   {item.product.discount > 0
-                    ? currencyFormat(parseInt(item.product.price))
-                    : currencyFormat(parseInt(item.product.price))}
+                    ? currencyFormat(parseInt(item.product.price) * item.qty)
+                    : currencyFormat(parseInt(item.product.price) * item.qty)}
                 </Text>
               </View>
             </View>
@@ -222,7 +256,7 @@ const Keranjang = () => {
             paddingHorizontal: sizes.five,
             paddingTop: 0,
           }}
-          contentContainerStyle={{flexGrow: 1}}
+          contentContainerStyle={{flexGrow: 1, paddingBottom: sizes.five}}
           ListEmptyComponent={
             <View
               style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>

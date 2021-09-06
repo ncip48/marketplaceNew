@@ -46,7 +46,7 @@ const TambahAlamat = ({navigation, route}) => {
       ),
     ).then(res => {
       if (res) {
-        if (res.status == 200) {
+        if (res) {
           dispatch(setProfileState('address', [...address, res.data]));
           navigation.goBack();
         }
