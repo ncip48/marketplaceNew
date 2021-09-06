@@ -7,7 +7,7 @@ import {_fetch} from '../../redux/actions/global';
 import {Divider, Icon, CheckBox, Image} from 'react-native-elements';
 import {Button, Card, Header, Text} from '../../components';
 import colors from '../../utils/colors';
-import {currencyFormat, getPriceDiskon, Toaster} from '../../helpers';
+import {currencyFormat, getPriceDiskon, Toaster, debounce} from '../../helpers';
 import {
   deleteCart,
   setProfileState,
@@ -16,9 +16,8 @@ import {
 import {useFocusEffect} from '@react-navigation/native';
 import {sizes} from '../../utils';
 import {ActivityIndicator} from 'react-native-paper';
-import debounce from 'lodash/debounce';
 
-const Keranjang = () => {
+const Keranjang = ({navigation}) => {
   const dispatch = useDispatch();
   const isLoading = useSelector(state => state.global.fullscreenLoading);
   const {cart} = useSelector(state => state.profile);
@@ -73,17 +72,7 @@ const Keranjang = () => {
     let newRes = items.filter(res => res.id == item.id);
     dispatch(updateCart(newRes[0]));
     // subtotalAPI(newRes[0].id, newRes[0].qty);
-    debounceD(() => subtotalAPI(newRes[0].id, newRes[0].qty), 1000);
-  };
-
-  let timer;
-
-  const debounceD = function (fn, d) {
-    if (timer) {
-      clearTimeout(timer);
-    }
-
-    timer = setTimeout(fn, d);
+    debounce(() => subtotalAPI(newRes[0].id, newRes[0].qty), 1000);
   };
 
   const subtotalAPI = (id, count) => {
@@ -220,10 +209,7 @@ const Keranjang = () => {
                     align="right"
                     size={sizes.font12}>
                     {currencyFormat(
-                      getPriceDiskon(
-                        item.product.discount,
-                        item.product.price,
-                      ) * item.qty,
+                      getPriceDiskon(item.product.discount, item.product.price),
                     )}
                   </Text>
                 )}
@@ -240,7 +226,7 @@ const Keranjang = () => {
                   color={item.product.discount > 0 ? colors.gray : colors.black}
                   size={item.product.discount > 0 ? sizes.font10 : sizes.font12}
                   type={item.product.discount > 0 ? 'Regular' : 'Bold'}>
-                  {currencyFormat(parseInt(item.product.price) * item.qty)}
+                  {currencyFormat(parseInt(item.product.price))}
                 </Text>
               </View>
             </View>
@@ -306,8 +292,15 @@ const Keranjang = () => {
                 title={`Checkout (${subtotalCount()})`}
                 bg={colors.red}
                 color={colors.white}
-                onPress={() => addCart(result.product.id)}
-                // loading={loadingCart}
+                onPress={() =>
+                  navigation.navigate('Checkout', {
+                    prevPayload: {
+                      item: cart.filter(res => res.checked == 1),
+                      voucher: {},
+                    },
+                  })
+                }
+                disabled={cart.filter(res => res.checked == 1).length == 0}
                 rounded
               />
             </View>

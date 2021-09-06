@@ -7,7 +7,7 @@ const Card = ({style, children}) => {
     <View
       style={{
         ...style,
-        flex: 1,
+        // flex: 1,
         backgroundColor: colors.white,
         borderRadius: 8,
         borderWidth: 1,

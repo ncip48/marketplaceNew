@@ -15,6 +15,15 @@ PushNotification.configure({
   requestPermissions: true,
 });
 
+export const debounce = function (fn, d) {
+  let timer;
+  if (timer) {
+    clearTimeout(timer);
+  }
+
+  timer = setTimeout(fn, d);
+};
+
 export const handleFetchError = (e, source) => {
   if (process.env && process.env.NODE_ENV == 'development') {
     console.log('error', source, e);
