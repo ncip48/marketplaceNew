@@ -37,6 +37,10 @@ export default {
     const config = await generateHeaders(['content-json', 'authorization']);
     return baseRequest.get(`/api/v1/cart`, config);
   },
+  async updateCart(id, payload) {
+    const config = await generateHeaders(['content-json', 'authorization']);
+    return baseRequest.patch(`/api/v1/cart/${id}`, {...payload}, config);
+  },
   async deleteCart(id) {
     const config = await generateHeaders(['content-json', 'authorization']);
     return baseRequest.delete(`/api/v1/cart/${id}`, config);

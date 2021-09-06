@@ -72,7 +72,26 @@ const Keranjang = () => {
     items.splice(index, 1, item);
     let newRes = items.filter(res => res.id == item.id);
     dispatch(updateCart(newRes[0]));
-    // console.log(newRes[0].qty);
+    // subtotalAPI(newRes[0].id, newRes[0].qty);
+    debounceD(() => subtotalAPI(newRes[0].id, newRes[0].qty), 1000);
+  };
+
+  let timer;
+
+  const debounceD = function (fn, d) {
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    timer = setTimeout(fn, d);
+  };
+
+  const subtotalAPI = (id, count) => {
+    // debounceD(() => {
+    //   console.log(id, count);
+    // }, 500);
+    // console.log(id, count);
+    dispatch(_fetch(ProfileServices.updateCart(id, {qty: count}), false));
   };
 
   const onRefresh = () => {
@@ -89,7 +108,7 @@ const Keranjang = () => {
     return 0;
   };
 
-  console.log(cart);
+  // console.log(cart);
 
   const subtotalCount = () => {
     if (cart) {
@@ -215,17 +234,13 @@ const Keranjang = () => {
                       ? {
                           textDecorationLine: 'line-through',
                           textDecorationStyle: 'solid',
-                          // marginBottom: sizes.five,
-                          // marginHorizontal: sizes.ten,
                         }
                       : {}
                   }
                   color={item.product.discount > 0 ? colors.gray : colors.black}
                   size={item.product.discount > 0 ? sizes.font10 : sizes.font12}
                   type={item.product.discount > 0 ? 'Regular' : 'Bold'}>
-                  {item.product.discount > 0
-                    ? currencyFormat(parseInt(item.product.price) * item.qty)
-                    : currencyFormat(parseInt(item.product.price) * item.qty)}
+                  {currencyFormat(parseInt(item.product.price) * item.qty)}
                 </Text>
               </View>
             </View>
