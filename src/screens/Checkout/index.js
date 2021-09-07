@@ -1,6 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, FlatList, ScrollView, View} from 'react-native';
-import {Button, Card, Header, Text} from '../../components';
+import {
+  StyleSheet,
+  FlatList,
+  ScrollView,
+  View,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
+import {BottomSheet, Button, Card, Header, Text} from '../../components';
 import colors from '../../utils/colors';
 import {useSelector, useDispatch} from 'react-redux';
 import {_fetch} from '../../redux/actions/global';
@@ -8,29 +15,50 @@ import {CheckoutServices} from '../../services';
 import {sizes} from '../../utils';
 import {ActivityIndicator} from 'react-native-paper';
 import {Icon, Image} from 'react-native-elements';
-import {currencyFormat, getPriceDiskon} from '../../helpers';
+import {
+  currencyFormat,
+  getCourierImage,
+  getPriceDiskon,
+  isEmptyArray,
+} from '../../helpers';
+import ResponsiveScreen from 'react-native-auto-responsive-screen';
+import {Divider} from 'react-native-elements/dist/divider/Divider';
 
-const payload = {
-  items: [
-    {
-      id: '6',
-      nameProduct: 'Corsair HX1200',
-      qty: '1',
-      price: 4320000,
-      discount: 20,
-    },
-  ],
-  bank: null,
-  type: 'gopay',
-  total: 4320000,
-  ongkir: 216000,
-  courier: 'jne REG',
-  address: 5,
-};
+const courierTemp = [
+  {
+    code: 'jne',
+    name: 'JNE',
+  },
+  {
+    code: 'pos',
+    name: 'POS',
+  },
+  {
+    code: 'tiki',
+    name: 'Tiki',
+  },
+  {
+    code: 'jnt',
+    name: 'JNT',
+  },
+  {
+    code: 'sicepat',
+    name: 'Sicepat',
+  },
+  {
+    code: 'anteraja',
+    name: 'Anteraja',
+  },
+  {
+    code: 'sap',
+    name: 'SAP Express',
+  },
+];
 
 const Checkout = ({navigation, route}) => {
   const {prevPayload} = route.params;
   console.log(prevPayload);
+  const sheetCourierRef = React.useRef();
   const {address} = useSelector(state => state.profile);
   const [selectedAddress, setSelectedAddress] = useState(
     address.filter(res => res.isMain == 1)[0],
@@ -41,6 +69,7 @@ const Checkout = ({navigation, route}) => {
   const dispatch = useDispatch();
 
   const clickAction = async () => {
+    const payload = {};
     await dispatch(
       _fetch(CheckoutServices.createCheckout(payload), false),
     ).then(res => {
@@ -102,7 +131,7 @@ const Checkout = ({navigation, route}) => {
               </Text>
               <View>
                 {item.product.discount > 0 && (
-                  <Text color={colors.black} type="Bold" size={sizes.font12}>
+                  <Text color={colors.black} type="Regular" size={sizes.font12}>
                     {currencyFormat(
                       getPriceDiskon(item.product.discount, item.product.price),
                     )}
@@ -121,7 +150,7 @@ const Checkout = ({navigation, route}) => {
                   }
                   color={item.product.discount > 0 ? colors.gray : colors.black}
                   size={item.product.discount > 0 ? sizes.font10 : sizes.font12}
-                  type={item.product.discount > 0 ? 'Regular' : 'Bold'}>
+                  type={item.product.discount > 0 ? 'Regular' : 'Regular'}>
                   {currencyFormat(parseInt(item.product.price))}
                 </Text>
               </View>
@@ -132,6 +161,8 @@ const Checkout = ({navigation, route}) => {
     );
   };
 
+  console.log(selectedCourier);
+
   return (
     <>
       <Header title="Checkout" center bg={colors.bg} bold />
@@ -139,7 +170,7 @@ const Checkout = ({navigation, route}) => {
         <Text type="SemiBold" size={sizes.font14}>
           Alamat Pengiriman
         </Text>
-        <Card style={{padding: sizes.fifTeen}}>
+        <Card style={{padding: sizes.fifTeen, marginHorizontal: 1}}>
           <View
             style={{
               flexDirection: 'row',
@@ -187,13 +218,13 @@ const Checkout = ({navigation, route}) => {
           contentContainerStyle={{
             flexGrow: 1,
             paddingBottom: 0,
-            marginHorizontal: -sizes.fifTeen,
+            marginHorizontal: -sizes.fifTeen + 1,
           }}
         />
         <Text type="SemiBold" size={sizes.font14}>
           Metode Pembayaran
         </Text>
-        <Card style={{padding: sizes.fifTeen}}>
+        <Card style={{padding: sizes.fifTeen, marginHorizontal: 1}}>
           <View
             style={{
               flexDirection: 'row',
@@ -211,23 +242,50 @@ const Checkout = ({navigation, route}) => {
         <Text type="SemiBold" size={sizes.font14}>
           Kurir
         </Text>
-        <Card style={{padding: sizes.fifTeen, marginBottom: sizes.twenty}}>
+        <Card
+          style={{
+            padding: sizes.fifTeen,
+            marginBottom: sizes.twenty,
+            marginHorizontal: 1,
+          }}>
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
             }}>
-            {setSelectedCourier ? (
-              <Text size={sizes.font12}>JNE REG</Text>
-            ) : (
+            {isEmptyArray(selectedCourier) ? (
               <Text size={sizes.font12}>Pilih Kurir</Text>
+            ) : (
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Image
+                  source={{uri: getCourierImage(selectedCourier.code)}}
+                  style={{
+                    height: sizes.twentyFive * 1.5,
+                    width: sizes.thirtyFive * 1.5,
+                    marginRight: sizes.twenty,
+                  }}
+                  resizeMode="contain"
+                  placeholderStyle={{backgroundColor: colors.white}}
+                  PlaceholderContent={
+                    <ActivityIndicator
+                      color={colors.red}
+                      size={sizes.fifTeen}
+                    />
+                  }
+                />
+                <Text size={sizes.font12}>{selectedCourier.name}</Text>
+              </View>
             )}
-            <Icon type="material-community" name="chevron-right" />
+            <Icon
+              type="material-community"
+              name="chevron-right"
+              onPress={() => sheetCourierRef.current.open()}
+            />
           </View>
         </Card>
       </ScrollView>
-      <View style={[styles.container, {flex: 0}]}>
+      <View style={[styles.container, {flex: 0, paddingVertical: sizes.ten}]}>
         <View
           style={{
             flexDirection: 'row',
@@ -246,7 +304,7 @@ const Checkout = ({navigation, route}) => {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
-            marginTop: sizes.five,
+            marginTop: sizes.five / 2,
           }}>
           <Text size={sizes.font12} color={colors.gray}>
             Ongkos Kirim :{' '}
@@ -260,7 +318,7 @@ const Checkout = ({navigation, route}) => {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
-            marginVertical: sizes.five,
+            marginVertical: sizes.five / 2,
           }}>
           <Text size={sizes.font12} color={colors.gray}>
             Total Belanja :{' '}
@@ -272,6 +330,77 @@ const Checkout = ({navigation, route}) => {
         {/* <Text>{JSON.stringify(payload)}</Text> */}
         <Button title="Buat Pesanan" onPress={() => clickAction()} rounded />
       </View>
+      <BottomSheet
+        ref={sheetCourierRef}
+        closeOnDragDown={true}
+        closeOnPressMask={true}
+        topBarStyle={{
+          width: sizes.thirtyFive,
+          height: sizes.five,
+          borderRadius: 2.5,
+        }}
+        // height={Dimensions.get('screen').height / 1.5}
+        height={ResponsiveScreen.normalize(400)}
+        closeOnHardwareBack={true}
+        sheetStyle={{borderRadius: sizes.fifTeen}}>
+        <View style={{padding: sizes.ten}}>
+          <View>
+            <FlatList
+              data={courierTemp}
+              keyExtractor={(item, index) => index.toString()}
+              showsVerticalScrollIndicator={false}
+              style={{
+                paddingVertical: sizes.five,
+                paddingHorizontal: sizes.five,
+                paddingTop: 0,
+              }}
+              contentContainerStyle={{
+                flexGrow: 1,
+                paddingBottom: sizes.fifTeen,
+              }}
+              renderItem={({item, index}) => {
+                return (
+                  <>
+                    <TouchableOpacity
+                      activeOpacity={1}
+                      onPress={() => {
+                        setSelectedCourier(item);
+                        sheetCourierRef.current.close();
+                      }}
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginVertical: sizes.five,
+                      }}>
+                      <Image
+                        source={{uri: getCourierImage(item.code)}}
+                        style={{
+                          height: sizes.twentyFive * 1.5,
+                          width: sizes.thirtyFive * 1.5,
+                          marginRight: sizes.thirty,
+                        }}
+                        resizeMode="contain"
+                        placeholderStyle={{backgroundColor: colors.white}}
+                        PlaceholderContent={
+                          <ActivityIndicator
+                            color={colors.red}
+                            size={sizes.fifTeen}
+                          />
+                        }
+                      />
+                      <Text size={sizes.font12} type="SemiBold">
+                        {item.name}
+                      </Text>
+                    </TouchableOpacity>
+                    <Divider />
+                  </>
+                );
+              }}
+            />
+          </View>
+          {/* <Button style={{bottom: 0}} title="Pilih" rounded /> */}
+        </View>
+      </BottomSheet>
     </>
   );
 };

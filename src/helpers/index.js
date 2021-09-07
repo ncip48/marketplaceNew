@@ -53,6 +53,33 @@ export const Toaster = (msg, duration = ToastAndroid.LONG) => {
   }
 };
 
+export const isEmptyArray = arr => {
+  let check = typeof arr === 'object' && arr == null;
+  return check;
+};
+
+export const getCourierImage = courier => {
+  if (!courier) return;
+  switch (courier) {
+    case 'jne':
+      return 'https://upload.wikimedia.org/wikipedia/commons/9/92/New_Logo_JNE.png';
+    case 'tiki':
+      return 'https://www.tikibanjarmasin.com/images/Logo-TIKI.png';
+    case 'pos':
+      return 'https://upload.wikimedia.org/wikipedia/id/thumb/0/00/Pos-Indonesia.svg/1200px-Pos-Indonesia.svg.png';
+    case 'jnt':
+      return 'https://upload.wikimedia.org/wikipedia/commons/3/35/Logo_J%26T_Merah_Square.jpg';
+    case 'sicepat':
+      return 'https://1.bp.blogspot.com/-V6p7VLjIrh0/X_RkAB_E70I/AAAAAAAADtU/bjFnALw5JD4YQB-h4_H7PrDu8NuU-ohDgCLcBGAsYHQ/s1600/Logo%2BSiCepat%2BEkspres.png';
+    case 'anteraja':
+      return 'https://anteraja.id/assets/img/Logo%20Anteraja-New-01.png';
+    case 'sap':
+      return 'https://www.sap-express.id/assets/img/content/promo-after-sap.png';
+    default:
+      break;
+  }
+};
+
 export const getStatusOrder = status => {
   if (!status) return;
   switch (status) {

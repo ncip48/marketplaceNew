@@ -87,18 +87,6 @@ const DaftarAlamat = ({navigation}) => {
     return (
       <Card style={{padding: sizes.fifTeen, margin: sizes.ten}}>
         <View style={styles.rowJustify}>
-          {/* <View style={styles.row}>
-            <Text size={sizes.ten} type="SemiBold">
-              {item.tag}
-            </Text>
-            {item.isMain ? (
-              <View style={styles.txtUtama}>
-                <Text color={colors.grey} size={sizes.ten} type="SemiBold">
-                  Alamat Utama
-                </Text>
-              </View>
-            ) : null}
-          </View> */}
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text type="SemiBold" size={sizes.font12}>
               {item.nameReceiver}{' '}
@@ -107,17 +95,6 @@ const DaftarAlamat = ({navigation}) => {
               ({item.tag})
             </Text>
           </View>
-          {/* <Icon
-            name="dots-vertical"
-            type="material-community"
-            color={colors.grey}
-            onPress={() => {
-              setDetail(item);
-              // sheetRef.current.snapTo(0);
-              // setShow(true);
-              sheetRef.current.open();
-            }}
-          /> */}
           <Text
             color={colors.red}
             size={sizes.font12}
@@ -125,18 +102,10 @@ const DaftarAlamat = ({navigation}) => {
             Edit
           </Text>
         </View>
-        {/* <Text type="SemiBold" size={sizes.font12}>
-          {item.nameReceiver}
-        </Text> */}
         <Text type="Light" size={sizes.font12}>
           {item.phoneReceiver}
         </Text>
         <View style={styles.row}>
-          {/* <Icon
-            color={colors.green}
-            name="map-marker"
-            type="material-community"
-          /> */}
           <Text size={sizes.font12} style={{flex: 1}} align="justify">
             {item.address}, {item.cityName}, {item.provinceName}, {item.zipcode}
           </Text>
@@ -170,14 +139,6 @@ const DaftarAlamat = ({navigation}) => {
               : () => updateMain(item.id, 1)
           }
         />
-        {/* <Button
-          title="Ubah Alamat"
-          border
-          bg={colors.white}
-          color={colors.grey}
-          style={styles.buttonUbah}
-          onPress={() => navigation.navigate('EditAlamat', {item})}
-        /> */}
       </Card>
     );
   };
@@ -319,12 +280,14 @@ const DaftarAlamat = ({navigation}) => {
             }
             ListFooterComponent={
               address.length != 0 && (
-                <TouchableOpacity
-                  activeOpacity={1}
-                  style={styles.wrapper}
-                  onPress={() => navigation.navigate('TambahAlamat')}>
-                  <Text size={sizes.font12}>+ Tambah Alamat</Text>
-                </TouchableOpacity>
+                <Card style={{padding: sizes.fifTeen, margin: sizes.ten}}>
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    // style={styles.wrapper}
+                    onPress={() => navigation.navigate('TambahAlamat')}>
+                    <Text size={sizes.font12}>+ Tambah Alamat</Text>
+                  </TouchableOpacity>
+                </Card>
               )
             }
           />

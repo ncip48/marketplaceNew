@@ -57,6 +57,7 @@ export default class App extends Component {
     //   '%s: Calling `getNode()`',
     // ]);
     LogBox.ignoreAllLogs();
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
   }
 
   render() {
